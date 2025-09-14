@@ -37,12 +37,46 @@
     #restartBtn:hover {
       background: #e84118;
     }
+    /* Mobile controls */
+    #controls {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #controls button {
+      width: 60px;
+      height: 60px;
+      margin: 5px;
+      font-size: 24px;
+      border-radius: 10px;
+      border: none;
+      background: #ffda79;
+      cursor: pointer;
+    }
+    #controls button:active {
+      background: #f0932b;
+    }
+    #controls div {
+      display: flex;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
-  <h1>🐍 Snake Game by Eng. Mohamed Moza b1</h1>
+  <h1>🐍 Snake Game</h1>
   <canvas id="gameCanvas" width="400" height="400"></canvas>
   <button id="restartBtn">Restart</button>
+
+  <!-- Touch controls for phones -->
+  <div id="controls">
+    <button onclick="setDirection({key:'ArrowUp'})">⬆️</button>
+    <div>
+      <button onclick="setDirection({key:'ArrowLeft'})">⬅️</button>
+      <button onclick="setDirection({key:'ArrowDown'})">⬇️</button>
+      <button onclick="setDirection({key:'ArrowRight'})">➡️</button>
+    </div>
+  </div>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
@@ -65,8 +99,10 @@
       game = setInterval(draw, 100);
     }
 
+    // Keyboard control
     document.addEventListener("keydown", setDirection);
 
+    // Works for both keyboard and touch buttons
     function setDirection(event) {
       if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
       else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
@@ -93,7 +129,7 @@
       let snakeX = snake[0].x;
       let snakeY = snake[0].y;
 
-      // direction
+      // move snake
       if (direction === "LEFT") snakeX -= box;
       if (direction === "UP") snakeY -= box;
       if (direction === "RIGHT") snakeX += box;
@@ -126,7 +162,7 @@
 
       snake.unshift(newHead);
 
-      // score
+      // score display
       ctx.fillStyle = "white";
       ctx.font = "20px Arial";
       ctx.fillText("Score: " + score, box, canvas.height - 10);
@@ -143,7 +179,7 @@
 
     restartBtn.addEventListener("click", initGame);
 
-    initGame(); // start first game
+    initGame(); // start the game
   </script>
 </body>
 </html>
