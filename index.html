@@ -2,84 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Colorful Calculator</title>
+  <title>Snake Game</title>
   <style>
     body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #74ebd5, #9face6);
       font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #74ebd5, #ACB6E5);
-      text-align: center;
-      padding: 50px;
+    }
+    canvas {
+      background: #111;
+      display: block;
+      border: 4px solid #fff;
+      border-radius: 10px;
     }
     h1 {
-      color: #333;
-    }
-    .calc-box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      display: inline-block;
-    }
-    input {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      width: 120px;
-      text-align: center;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 15px;
-      margin: 5px;
-      border: none;
-      border-radius: 6px;
-      background-color: #4CAF50;
+      position: absolute;
+      top: 20px;
       color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    #result {
-      font-weight: bold;
-      font-size: 18px;
-      margin-top: 15px;
-      color: #222;
     }
   </style>
 </head>
 <body>
-  <h1>🎨 Colorful Calculator by Eng Moza B1</h1>
-
-  <div class="calc-box">
-    <input id="num1" type="number" placeholder="First number">
-    <input id="num2" type="number" placeholder="Second number"><br>
-
-    <button onclick="calculate('+')">➕ Add</button>
-    <button onclick="calculate('-')">➖ Subtract</button>
-    <button onclick="calculate('*')">✖ Multiply</button>
-    <button onclick="calculate('/')">➗ Divide</button>
-
-    <p id="result">Result will show here</p>
-  </div>
+  <h1>🐍 Snake Game</h1>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
 
   <script>
-    function calculate(op) {
-      let a = Number(document.getElementById("num1").value);
-      let b = Number(document.getElementById("num2").value);
-      let res;
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-      switch(op) {
-        case '+': res = a + b; break;
-        case '-': res = a - b; break;
-        case '*': res = a * b; break;
-        case '/': res = b !== 0 ? (a / b) : "Error (÷0)"; break;
+    const box = 20;
+    let snake = [{ x: 9 * box, y: 10 * box }];
+    let direction;
+    let food = {
+      x: Math.floor(Math.random() * 19) * box,
+      y: Math.floor(Math.random() * 19) * box
+    };
+    let score = 0;
+
+    document.addEventListener("keydown", setDirection);
+
+    function setDirection(event) {
+      if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+      else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+      else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+      else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // draw snake
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i === 0) ? "lime" : "green";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
       }
 
-      document.getElementById("result").innerText = "Result: " + res;
+      // draw food
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      // old head position
+      let snakeX = snake[0].x;
+      let snakeY = snake[0].y;
+
+      // direction
+      if (direction === "LEFT") snakeX -= box;
+      if (direction === "UP") snakeY -= box;
+      if (direction === "RIGHT") snakeX += box;
+      if (direction === "DOWN") snakeY += box;
+
+      // eat food
+      if (snakeX === food.x && snakeY === food.y) {
+        score++;
+        food = {
+          x: Math.floor(Math.random() * 19) * box,
+          y: Math.floor(Math.random() * 19) * box
+        };
+      } else {
+        snake.pop();
+      }
+
+      // new head
+      const newHead = { x: snakeX, y: snakeY };
+
+      // game over
+      if (
+        snakeX < 0 || snakeY < 0 ||
+        snakeX >= canvas.width || snakeY >= canvas.height ||
+        collision(newHead, snake)
+      ) {
+        clearInterval(game);
+        alert("Game Over! Your score: " + score);
+      }
+
+      snake.unshift(newHead);
+
+      // score
+      ctx.fillStyle = "white";
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, box, canvas.height - 10);
     }
+
+    function collision(head, array) {
+      for (let i = 0; i < array.length; i++) {
+        if (head.x === array[i].x && head.y === array[i].y) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    let game = setInterval(draw, 100);
   </script>
 </body>
 </html>
