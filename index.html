@@ -64,17 +64,17 @@
   </style>
 </head>
 <body>
-  <h1>🐍 Snake Game by Eng. Mohamed Moza b1</h1>
+  <h1>🐍 Snake Game</h1>
   <canvas id="gameCanvas" width="400" height="400"></canvas>
   <button id="restartBtn">Restart</button>
 
-  <!-- Touch controls for phones -->
+  <!-- Touch + Mouse controls -->
   <div id="controls">
-    <button onclick="setDirection({key:'ArrowUp'})">⬆️</button>
+    <button ontouchstart="setDirection({key:'ArrowUp'})" onclick="setDirection({key:'ArrowUp'})">⬆️</button>
     <div>
-      <button onclick="setDirection({key:'ArrowLeft'})">⬅️</button>
-      <button onclick="setDirection({key:'ArrowDown'})">⬇️</button>
-      <button onclick="setDirection({key:'ArrowRight'})">➡️</button>
+      <button ontouchstart="setDirection({key:'ArrowLeft'})" onclick="setDirection({key:'ArrowLeft'})">⬅️</button>
+      <button ontouchstart="setDirection({key:'ArrowDown'})" onclick="setDirection({key:'ArrowDown'})">⬇️</button>
+      <button ontouchstart="setDirection({key:'ArrowRight'})" onclick="setDirection({key:'ArrowRight'})">➡️</button>
     </div>
   </div>
 
@@ -183,4 +183,3 @@
   </script>
 </body>
 </html>
-
